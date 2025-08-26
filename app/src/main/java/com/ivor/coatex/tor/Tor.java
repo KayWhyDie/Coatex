@@ -62,7 +62,7 @@ public class Tor {
     private static String tordirname = "tordata";
     private static String torservdir = "torserv";
     private static String torCfg = "torcfg";
-    private static int HIDDEN_SERVICE_VERSION = 2;
+    private static int HIDDEN_SERVICE_VERSION = 3;
     private static Tor instance = null;
     private Context mContext;
     private static int mSocksPort = 9151;
@@ -91,7 +91,20 @@ public class Tor {
             mTorDir.mkdir();
         }
 
-        mDomain = Util.filestr(new File(getServiceDir(), "hostname")).trim();
+        // hostname file varies between v2 and v3 hidden services
+        File hsDir = getServiceDir();
+        String hostname = "";
+        if (HIDDEN_SERVICE_VERSION == 3) {
+            File v3pub = new File(hsDir, "hs_ed25519_public_key");
+            if (v3pub.exists()) {
+                hostname = Util.filestr(v3pub).trim();
+            }
+        }
+        if (hostname.length() == 0) {
+            // fallback to legacy 'hostname' file
+            hostname = Util.filestr(new File(hsDir, "hostname")).trim();
+        }
+        mDomain = hostname;
         log(mDomain);
     }
 
@@ -135,7 +148,8 @@ public class Tor {
                     torcfg.println("SOCKSPort " + mSocksPort);
                     torcfg.println("HTTPTunnelPort " + mHttpPort);
                     torcfg.println("HiddenServiceDir " + torsrv.getAbsolutePath());
-                    torcfg.println("HiddenServiceVersion " + HIDDEN_SERVICE_VERSION);
+                    // Force v3 hidden services for modern Tor builds
+                    torcfg.println("HiddenServiceVersion 3");
                     torcfg.println("HiddenServicePort " + getHiddenServicePort() + " " + Server.getInstance(mContext).getSocketName());
                     torcfg.println("HiddenServicePort " + getFileServerPort() + " 127.0.0.1:" + getFileServerPort());
                     torcfg.println();
@@ -144,8 +158,37 @@ public class Tor {
 
                     log("start: " + new File(torname).getAbsolutePath());
 
+                    // Prefer a packaged helper placed under nativeLibraryDir (jniLibs) if available.
+                    String nativeLibDir = mContext.getApplicationInfo().nativeLibraryDir;
+                    File packagedHelper = new File(nativeLibDir, torname);
+                    // Some packaged libraries may be named like libctor.so; check that too.
+                    File packagedHelperAlt = new File(nativeLibDir, "lib" + torname + ".so");
+                    String execPath;
+                    boolean packagedExists = packagedHelper.exists();
+                    boolean packagedAltExists = packagedHelperAlt.exists();
+                    boolean packagedExec = packagedExists && packagedHelper.canExecute();
+                    boolean packagedAltExec = packagedAltExists && packagedHelperAlt.canExecute();
+                    log("nativeLibDir=" + nativeLibDir + " packagedExists=" + packagedExists + " packagedExec=" + packagedExec + " packagedAltExists=" + packagedAltExists + " packagedAltExec=" + packagedAltExec);
+                    if (packagedExec) {
+                        execPath = packagedHelper.getAbsolutePath();
+                        log("using packaged helper: " + execPath);
+                    } else if (packagedAltExec) {
+                        execPath = packagedHelperAlt.getAbsolutePath();
+                        log("using packaged helper (alt): " + execPath);
+                    } else {
+                        // fallback to the extracted file in app files dir
+                        File extracted = mContext.getFileStreamPath(torname);
+                        try {
+                            extracted.setExecutable(true);
+                        } catch (Exception e) {
+                            // ignore
+                        }
+                        execPath = extracted.getAbsolutePath();
+                        log("using extracted helper: " + execPath);
+                    }
+
                     String[] command = new String[]{
-                            mContext.getFileStreamPath(torname).getAbsolutePath(),
+                            execPath,
                             "-f", mContext.getFileStreamPath(torCfg).getAbsolutePath()
                     };
 
@@ -195,8 +238,33 @@ public class Tor {
                         }
                     }
                 } catch (Exception ex) {
+                    // Log the error and notify listeners so UI can update instead of remaining stuck.
                     ex.printStackTrace();
-                    //throw new Error(ex);
+                    status = "Tor startup failed: " + (ex.getMessage() != null ? ex.getMessage() : ex.toString());
+                    log(status);
+                    try {
+                        for (Listener l : mListeners) {
+                            if (l != null) l.onChange();
+                        }
+                    } catch (Exception e) {
+                        // ignore listener exceptions
+                    }
+                    try {
+                        for (LogListener ll : mLogListeners) {
+                            if (ll != null) ll.onLog();
+                        }
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                    // ensure not running
+                    mRunning.set(false);
+                    // attempt to let Server perform a check in case it wants to recover
+                    try {
+                        Server.getInstance(mContext).checkServiceRegistered();
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                    // do not rethrow; we want the app to continue running and reflect the error
                 }
                 mRunning.set(false);
             }
@@ -310,7 +378,15 @@ public class Tor {
     }
 
     public String readPrivateKeyFile() {
-        return Util.filestr(new File(getServiceDir(), HIDDEN_SERVICE_VERSION == 3 ? "hs_ed25519_secret_key" : "private_key"));
+        if (HIDDEN_SERVICE_VERSION == 3) {
+            File f = new File(getServiceDir(), "hs_ed25519_secret_key");
+            if (f.exists()) return Util.filestr(f);
+            // some Tor builds may use a different name; fall back
+            File alt = new File(getServiceDir(), "private_key");
+            return Util.filestr(alt);
+        } else {
+            return Util.filestr(new File(getServiceDir(), "private_key"));
+        }
     }
 
     public RSAPrivateKey getPrivateKey() {

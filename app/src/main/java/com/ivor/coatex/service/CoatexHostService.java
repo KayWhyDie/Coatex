@@ -156,8 +156,11 @@ public class CoatexHostService extends Service {
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        PendingIntent intent = PendingIntent.getActivity(this, 0,
-                notificationIntent, 0);
+    // PendingIntent on Android S+ (targetSdk 31+) must specify FLAG_IMMUTABLE or FLAG_MUTABLE.
+    // Use FLAG_IMMUTABLE and allow updates with FLAG_UPDATE_CURRENT so the notification intent can be refreshed.
+    int pendingFlags = PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT;
+    PendingIntent intent = PendingIntent.getActivity(this, 0,
+        notificationIntent, pendingFlags);
 
         if (progress > -1 && progress < 99) {
             notificationBuilder.setProgress(100, progress, false);
