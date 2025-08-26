@@ -1,5 +1,4 @@
 package com.ivor.coatex.adapters;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -68,6 +67,11 @@ public class ContactsAdapter extends RealmRecyclerViewAdapter<Contact, ContactVi
         mIsShareAdapter = isShareAdapter;
 
         setHasStableIds(true);
+    }
+
+    public void updateData(RealmResults<Contact> data) {
+        mCopyData = data;
+        notifyDataSetChanged();
     }
 
     void enableDeletionMode(boolean enabled) {

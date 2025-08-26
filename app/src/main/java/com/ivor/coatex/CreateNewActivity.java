@@ -37,18 +37,12 @@ public class CreateNewActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ((RadioGroup) findViewById(R.id.radioGroup)).setOnCheckedChangeListener((radioGroup, i) -> {
-
-            switch (i) {
-                case R.id.rdbtnLightTheme:
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    Settings.putBoolean(getApplicationContext(), "use_dark_mode", false);
-//                    recreate();
-                    break;
-                case R.id.rdbtnDarkTheme:
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                    Settings.putBoolean(getApplicationContext(), "use_dark_mode", true);
-//                    recreate();
-                    break;
+            if (i == R.id.rdbtnLightTheme) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                Settings.putBoolean(getApplicationContext(), "use_dark_mode", false);
+            } else if (i == R.id.rdbtnDarkTheme) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                Settings.putBoolean(getApplicationContext(), "use_dark_mode", true);
             }
         });
     }

@@ -13,6 +13,8 @@ package com.ivor.coatex.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.content.res.Resources;
+import android.util.Log;
 
 import com.ivor.coatex.R;
 
@@ -24,7 +26,12 @@ public class Settings {
 
         SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(c);
 
-        PreferenceManager.setDefaultValues(c, R.xml.prefs, false);
+        try {
+            PreferenceManager.setDefaultValues(c, R.xml.prefs, false);
+        } catch (Resources.NotFoundException e) {
+            // Log and continue — avoid crashing the app at startup if the prefs XML cannot be read
+            Log.e("Settings", "prefs resource not found", e);
+        }
 
         return p;
 

@@ -9,11 +9,9 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
-import com.jarvanmo.exoplayerview.media.SimpleMediaSource;
-import com.jarvanmo.exoplayerview.ui.ExoVideoView;
-
-import static com.jarvanmo.exoplayerview.orientation.OnOrientationChangedListener.SENSOR_LANDSCAPE;
-import static com.jarvanmo.exoplayerview.orientation.OnOrientationChangedListener.SENSOR_PORTRAIT;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.MediaItem;
 
 //import com.squareup.picasso.Picasso;
 
@@ -22,7 +20,15 @@ public class VideoViewActivity extends AppCompatActivity {
     public static final String EXTRA_VIDEO_PATH = "video_path";
 
     private String mFilePath;
-    private ExoVideoView videoView;
+    private PlayerView videoView;
+
+    // Local subclass to add no-op resume/pause for compatibility
+    public static class CompatPlayerView extends PlayerView {
+        public CompatPlayerView(android.content.Context c) { super(c); }
+        public void resume() {}
+        public void pause() {}
+    }
+    private SimpleExoPlayer player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,29 +42,16 @@ public class VideoViewActivity extends AppCompatActivity {
             finish();
         }
 
-        videoView = findViewById(R.id.videoView);
+    videoView = (PlayerView) findViewById(R.id.videoView);
+    // If needed, could cast to CompatPlayerView
 
-        videoView.setBackListener((view, isPortrait) -> {
-            if (isPortrait) {
-                finish();
-            }
-            return false;
-        });
+        player = new SimpleExoPlayer.Builder(this).build();
+        videoView.setPlayer(player);
 
-        videoView.setOrientationListener(orientation -> {
-            if (orientation == SENSOR_PORTRAIT) {
-                changeToPortrait();
-            } else if (orientation == SENSOR_LANDSCAPE) {
-                changeToLandscape();
-            }
-        });
-
-
-        SimpleMediaSource mediaSource = new SimpleMediaSource(mFilePath);//uri also supported
-        videoView.play(mediaSource);
-        videoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
-
-        videoView.setUseController(true);
+        MediaItem mediaItem = MediaItem.fromUri(mFilePath);
+        player.setMediaItem(mediaItem);
+        player.prepare();
+        player.setPlayWhenReady(true);
 
     }
 
@@ -98,7 +91,10 @@ public class VideoViewActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        videoView.releasePlayer();
+        if (player != null) {
+            player.release();
+            player = null;
+        }
     }
 
 

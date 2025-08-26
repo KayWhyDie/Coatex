@@ -551,31 +551,26 @@ public class ChatActivity extends AppCompatActivity {
     private void showPickFileIntent(MenuItem item) {
         Intent intent = new Intent();
         String title = "Select File";
-        switch (item.getItemId()) {
-            case R.id.menu_take_picture:
-                intent = null;
-                dispatchTakePictureIntent();
-                mAttachFileType = Message.TYPE_IMAGE;
-                break;
-            case R.id.menu_record_video:
-                intent = null;
-                dispatchTakeVideoIntent();
-                mAttachFileType = Message.TYPE_VIDEO;
-                break;
-            case R.id.menu_attach_image:
-                intent.setType("image/*");
-                title = "Select Image";
-                mAttachFileType = Message.TYPE_IMAGE;
-                break;
-            case R.id.menu_attach_video:
-                intent.setType("video/*");
-                title = "Select Video";
-                mAttachFileType = Message.TYPE_VIDEO;
-                break;
-            case R.id.menu_attach_file:
-                intent.setType("*/*");
-                mAttachFileType = Message.TYPE_FILE;
-                break;
+        int id = item.getItemId();
+        if (id == R.id.menu_take_picture) {
+            intent = null;
+            dispatchTakePictureIntent();
+            mAttachFileType = Message.TYPE_IMAGE;
+        } else if (id == R.id.menu_record_video) {
+            intent = null;
+            dispatchTakeVideoIntent();
+            mAttachFileType = Message.TYPE_VIDEO;
+        } else if (id == R.id.menu_attach_image) {
+            intent.setType("image/*");
+            title = "Select Image";
+            mAttachFileType = Message.TYPE_IMAGE;
+        } else if (id == R.id.menu_attach_video) {
+            intent.setType("video/*");
+            title = "Select Video";
+            mAttachFileType = Message.TYPE_VIDEO;
+        } else if (id == R.id.menu_attach_file) {
+            intent.setType("*/*");
+            mAttachFileType = Message.TYPE_FILE;
         }
         // for taking picture and recording video, this intent will be null
         if (intent != null) {

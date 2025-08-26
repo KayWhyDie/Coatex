@@ -309,46 +309,40 @@ public class ChatAdapter extends RealmRecyclerViewAdapter<Message, ChatHolderTex
         popupMenu.getMenu().findItem(R.id.action_forward).setVisible(false);
         popupMenu.getMenu().findItem(R.id.action_share_with).setVisible(viewType != Message.TYPE_TEXT);
         popupMenu.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.action_copy_text:
-                    Util.setClipboard(mChatActivity, viewHolder.message.getContent());
-                    Toast.makeText(mChatActivity, "Message text copied", Toast.LENGTH_SHORT).show();
-                    break;
-                case R.id.action_forward:
-                    break;
-                case R.id.action_delete:
-                    askAndDelete(viewHolder.message, viewHolder.position);
-                    break;
-                case R.id.action_save_to:
-                    if (ContextCompat.checkSelfPermission(mChatActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        // Permission is not granted
-
-                        ActivityCompat.requestPermissions(mChatActivity,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                1);
-                        return false;
-                    }
-                    if (!Util.EXTERNAL_FOLDER.exists()) {
-                        Util.EXTERNAL_FOLDER.mkdir();
-                    }
-                    File src = new File(mMediaFolder, viewHolder.message.getFileShare().getFilename());
-                    String mimeType = viewHolder.message.getFileShare().getMimeType();
-                    File dest = new File(Util.getFolder(mimeType), src.getName());
-                    new CopyFile().execute(src.getAbsolutePath(), dest.getAbsolutePath());
-                    break;
-                case R.id.action_share_with:
-                    File file = new File(getFilePath(viewHolder.message));
-                    Uri path = FileProvider.getUriForFile(mChatActivity,
-                            mChatActivity.getApplicationContext().getPackageName() + ".provider",
-                            file);
-                    Intent shareIntent = new Intent();
-                    shareIntent.setAction(Intent.ACTION_SEND);
-                    shareIntent.putExtra(Intent.EXTRA_STREAM, path);
-                    shareIntent.setType(viewHolder.message.getFileShare().getMimeType());
-                    mChatActivity.startActivity(Intent.createChooser(shareIntent,
-                            mChatActivity.getString(R.string.send_to)));
-                    break;
+            int id = item.getItemId();
+            if (id == R.id.action_copy_text) {
+                Util.setClipboard(mChatActivity, viewHolder.message.getContent());
+                Toast.makeText(mChatActivity, "Message text copied", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.action_forward) {
+                // no-op
+            } else if (id == R.id.action_delete) {
+                askAndDelete(viewHolder.message, viewHolder.position);
+            } else if (id == R.id.action_save_to) {
+                if (ContextCompat.checkSelfPermission(mChatActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(mChatActivity,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            1);
+                    return false;
+                }
+                if (!Util.EXTERNAL_FOLDER.exists()) {
+                    Util.EXTERNAL_FOLDER.mkdir();
+                }
+                File src = new File(mMediaFolder, viewHolder.message.getFileShare().getFilename());
+                String mimeType = viewHolder.message.getFileShare().getMimeType();
+                File dest = new File(Util.getFolder(mimeType), src.getName());
+                new CopyFile().execute(src.getAbsolutePath(), dest.getAbsolutePath());
+            } else if (id == R.id.action_share_with) {
+                File file = new File(getFilePath(viewHolder.message));
+                Uri path = FileProvider.getUriForFile(mChatActivity,
+                        mChatActivity.getApplicationContext().getPackageName() + ".provider",
+                        file);
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, path);
+                shareIntent.setType(viewHolder.message.getFileShare().getMimeType());
+                mChatActivity.startActivity(Intent.createChooser(shareIntent,
+                        mChatActivity.getString(R.string.send_to)));
             }
             return false;
         });
@@ -498,7 +492,7 @@ public class ChatAdapter extends RealmRecyclerViewAdapter<Message, ChatHolderTex
                     holderAudio.audioView2.setUpControls();
                 try {
                     holderAudio.audioView2.setDataSource(message.getFileShare().getFilePath());
-                } catch (IOException ignored) {
+                } catch (Exception ignored) {
                 }
             } else {
                 File file = new File(getFilePath(message));
@@ -511,7 +505,7 @@ public class ChatAdapter extends RealmRecyclerViewAdapter<Message, ChatHolderTex
                         holderAudio.audioView2.setUpControls();
                     try {
                         holderAudio.audioView2.setDataSource(file.getAbsolutePath());
-                    } catch (IOException ignored) {
+                    } catch (Exception ignored) {
                     }
                 } else {
                     holderAudio.progressBar.setVisibility(View.VISIBLE);

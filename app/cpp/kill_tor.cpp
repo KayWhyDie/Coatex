@@ -1,7 +1,9 @@
 //
 // Created by ivor on 3/11/20.
 //
+
 #include <jni.h>
+#include <cstring>
 
 #include <sys/types.h>
 #include <dirent.h>
