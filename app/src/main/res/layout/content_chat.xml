@@ -42,7 +42,7 @@
 
     </FrameLayout>
 
-    <com.ivor.coatex.view.TorStatusView
+    <com.ivor.kriptex.view.TorStatusView
         android:id="@+id/torStatusView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
                     app:srcCompat="@drawable/ic_down" />
             </LinearLayout>
         </FrameLayout>
-    </com.ivor.coatex.view.TorStatusView>
+    </com.ivor.kriptex.view.TorStatusView>
 
     <RelativeLayout
         android:id="@+id/rlFab"
@@ -197,7 +197,7 @@
                     android:tint="@color/colorAccent"
                     app:srcCompat="@drawable/ic_mic" />
 
-                <com.ivor.coatex.view.ContentInfoEditText
+                <com.ivor.kriptex.view.ContentInfoEditText
                     android:id="@+id/txtMessage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

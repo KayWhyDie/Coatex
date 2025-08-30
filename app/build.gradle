@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
-// removed: apply plugin: 'realm-android' (requires classpath plugin)
-// removed: apply plugin: 'com.mikepenz.aboutlibraries.plugin' (requires classpath plugin)
+apply plugin: 'realm-android'
+apply plugin: 'com.mikepenz.aboutlibraries.plugin'
 
 android {
-    namespace = 'com.ivor.coatex'
+    namespace = 'com.ivor.kriptex'
     compileSdkVersion 34
 
     defaultConfig {
-        applicationId "com.ivor.coatex"
+        applicationId "com.ivor.kriptex"
         minSdkVersion 23
         targetSdkVersion 34
         versionCode 30
@@ -20,7 +20,7 @@ android {
         variant.outputs.all {
             def flavor = variant.name
             def versionName = variant.versionName
-            outputFileName = "Coatex_${flavor}_${versionName}_${versionCode}.apk"
+            outputFileName = "Kriptex_${flavor}_${versionName}_${versionCode}.apk"
         }
     }
 
@@ -34,6 +34,10 @@ android {
         cmake {
             path file('cpp/CMakeLists.txt')
         }
+    }
+
+    packagingOptions.jniLibs {
+        useLegacyPackaging = true
     }
 
     compileOptions {
@@ -65,24 +69,24 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.google.zxing:core:3.3.0'
-    // implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0' // Not found in public repos
+    // implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0' // Failing
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
-    // implementation 'jp.wasabeef:glide-transformations:4.1.0' // Not found in public repos
+    // implementation 'jp.wasabeef:glide-transformations:4.1.0' // Failing
     implementation 'cn.dreamtobe.filedownloader:filedownloader-okhttp3-connection:1.1.0'
     implementation 'com.squareup.okhttp3:okhttp:4.4.0'
     implementation 'com.liulishuo.filedownloader:library:1.7.7'
     implementation 'commons-codec:commons-codec:1.11'
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
-    // implementation 'io.realm:android-adapters:3.1.0' // Not found in public repos
-    // implementation 'com.devlomi.record-view:record-view:2.0.1' // Not found in public repos
-    // implementation 'com.4ert:audioview:1.4.12' // Not found in public repos
+    // implementation 'io.realm:android-adapters:3.1.0' // Failing
+    // implementation 'com.devlomi.record-view:record-view:2.0.1' // Failing
+    // implementation 'com.4ert:audioview:1.4.12' // Failing
     implementation 'com.github.abdularis:androidbuttonprogress:1.0.2'
-    // implementation 'com.adityak:browsemyfiles:1.9' // Not found in public repos
+    // implementation 'com.adityak:browsemyfiles:1.9' // Failing
     implementation 'com.github.MasayukiSuda:Mp4Composer-android:v0.3.9'
-    // implementation 'com.github.stfalcon:stfalcon-imageviewer:1.0.1' // Not found in public repos
+    // implementation 'com.github.stfalcon:stfalcon-imageviewer:1.0.1' // Failing
     implementation 'com.google.android.exoplayer:exoplayer:2.18.7'
-    // implementation 'com.jarvanmo:exoplayerview:2.1.5' // Not found in public repos
-    // implementation 'com.novoda:merlin:1.2.1' // Not found in public repos
-    // implementation "com.mikepenz:aboutlibraries:8.1.1" // Not found in public repos or requires missing fastadapter
+    // implementation 'com.jarvanmo:exoplayerview:2.1.5' // Failing
+    // implementation 'com.github.novoda:merlin:2.0.0'
+    implementation "com.mikepenz:aboutlibraries:11.1.0"
 }

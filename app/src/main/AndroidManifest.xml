@@ -79,7 +79,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service
-            android:name=".service.CoatexHostService"
+            android:name=".service.KriptexHostService"
             android:enabled="true"
             android:exported="true" />
 

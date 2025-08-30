@@ -48,7 +48,7 @@
         android:layout_margin="@dimen/margin_xl"
         app:srcCompat="@drawable/ic_add" />
 
-    <com.ivor.coatex.view.TorStatusView
+    <com.ivor.kriptex.view.TorStatusView
         android:id="@+id/torStatusView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -83,6 +83,6 @@
                 android:indeterminate="true"
                 android:max="100" />
         </FrameLayout>
-    </com.ivor.coatex.view.TorStatusView>
+    </com.ivor.kriptex.view.TorStatusView>
 
 </RelativeLayout>

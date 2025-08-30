@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Coatex</string>
+    <string name="app_name">Kriptex</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -126,7 +126,7 @@
     <string name="tor_connected">Tor connected</string>
     <string name="internet_not_available">Internet not available</string>
     <string name="starting_">Starting...</string>
-    <string name="registering_coatex_id_">Registering Coatex ID...</string>
+    <string name="registering_coatex_id_">Registering Kriptex ID...</string>
     <string name="starting_tor_">Starting tor...</string>
     <string name="title_activity_request">Requests</string>
     <string name="enter_password_exported_id">Please enter password for the export ID</string>
