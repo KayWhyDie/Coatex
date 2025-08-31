@@ -3,6 +3,7 @@
 .gradle/
 /local.properties
 .idea/
+.vscode/
 .DS_Store
 build/
 captures/
@@ -12,7 +13,7 @@ captures/
 # Keystore files
 *.jks
 *.keystore
-/app/src/main/assets/certificates/coatex.bks
+/app/src/main/assets/certificates/kriptex.bks
 
 # Outputs
 *.apk

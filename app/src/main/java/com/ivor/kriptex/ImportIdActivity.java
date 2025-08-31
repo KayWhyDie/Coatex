@@ -196,7 +196,7 @@ public class ImportIdActivity extends AppCompatActivity {
             ZipManager zipManager = new ZipManager(getApplicationContext());
 
             String inputFile = strings[0];
-            String outPutFile = new File(getFilesDir(), "coatex_backup.zip").getAbsolutePath();
+            String outPutFile = new File(getFilesDir(), "kriptex_backup.zip").getAbsolutePath();
 
             try {
                 AdvancedCrypto advancedCrypto = new AdvancedCrypto(mPassword);

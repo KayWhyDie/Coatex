@@ -318,7 +318,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Util.EXTERNAL_FOLDER.mkdir();
             }
 
-            File dest = new File(mContext.getFilesDir(), "coatex_backup.zip");
+            File dest = new File(mContext.getFilesDir(), "kriptex_backup.zip");
             ZipManager zipManager = new ZipManager(mContext);
             zipManager.makeZip(dest.getAbsolutePath());
             String privateKey = "tor/torserv/private_key";
@@ -348,7 +348,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
             zipManager.closeZip();
 
-            File destination = new File(Util.EXTERNAL_FOLDER, "coatex_backup.zip");
+            File destination = new File(Util.EXTERNAL_FOLDER, "kriptex_backup.zip");
 
             try {
                 AdvancedCrypto advancedCrypto = new AdvancedCrypto(mPassword);

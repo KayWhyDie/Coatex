@@ -1,12 +1,4 @@
-/*
- * Chat.onion - P2P Instant Messenger
- *
- * http://play.google.com/store/apps/details?id=onion.chat
- * http://onionapps.github.io/Chat.onion/
- * http://github.com/onionApps/Chat.onion
- *
- * Author: http://github.com/onionApps - http://jkrnk73uid7p5thz.onion - bitcoin:1kGXfWx8PHZEVriCNkbP5hzD15HS4AyKf
- */
+/* Kriptex - Secure P2P Messenger (rebranded) */
 
 package com.ivor.kriptex.tor;
 
@@ -40,7 +32,7 @@ public class Notifier {
     private Context context;
     private int activities = 0;
 
-    private static final String MESSAGE_CHANNEL_ID = "coatex_message_01";// The id of the channel.
+    private static final String MESSAGE_CHANNEL_ID = "kriptex_message_01";// The id of the channel.
 
     private Notifier(Context context) {
         context = context.getApplicationContext();
@@ -115,8 +107,8 @@ public class Notifier {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         int notificationId = 5;
-        String channelId = "coatex_message_01";
-        String channelName = "Coatex Message";
+    String channelId = "kriptex_message_01";
+    String channelName = "Kriptex Message";
         int importance = NotificationManager.IMPORTANCE_HIGH;
 
         String notificationTone = Settings.getPrefs(context).getString("ringtone", "DEFAULT_SOUND");
@@ -173,8 +165,8 @@ public class Notifier {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         int notificationId = 6;
-        String channelId = "coatex_request_01";
-        String channelName = "Coatex Request";
+    String channelId = "kriptex_request_01";
+    String channelName = "Kriptex Request";
         int importance = NotificationManager.IMPORTANCE_HIGH;
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

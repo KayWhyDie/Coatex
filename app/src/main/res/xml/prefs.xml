@@ -34,6 +34,6 @@
 
     <Preference
         android:key="about"
-        android:summary="About Coatex, libraries used, licenses"
+    android:summary="About Kriptex, libraries used, licenses"
         android:title="About" />
 </PreferenceScreen>

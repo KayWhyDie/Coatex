@@ -75,7 +75,7 @@ public class KriptexHostService extends Service {
         }, 0, 1000 * 60 * 10);
 
         PowerManager pMgr = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wakeLock = pMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Coatex:WakeLock");
+    wakeLock = pMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Kriptex:WakeLock");
         wakeLock.acquire();
         startForeground(getString(R.string.starting_tor_), -1);
     }
@@ -98,7 +98,7 @@ public class KriptexHostService extends Service {
         if (registered) {
             startForeground(getString(R.string.id_registered), 100);
         } else {
-            startForeground(getString(R.string.registering_coatex_id_), -1);
+            startForeground(getString(R.string.registering_kriptex_id_), -1);
         }
     };
 
@@ -125,7 +125,7 @@ public class KriptexHostService extends Service {
                     status = getString(R.string.id_registered);
                 } else {
                     if (mServer.isCheckServiceRegisteredRunning()) {
-                        status = getString(R.string.registering_coatex_id_);
+                        status = getString(R.string.registering_kriptex_id_);
                     } else {
                         status = getString(R.string.tor_connected);
                     }
@@ -183,8 +183,8 @@ public class KriptexHostService extends Service {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private String createNotificationChannel(NotificationManager notificationManager) {
-        String channelId = "coatext_service";
-        String channelName = "Coatex Service";
+    String channelId = "kriptex_service";
+    String channelName = "Kriptex Service";
         NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
         // omitted the LED color
         channel.setImportance(NotificationManager.IMPORTANCE_NONE);

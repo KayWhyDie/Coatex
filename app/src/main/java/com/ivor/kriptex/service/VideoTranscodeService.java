@@ -186,7 +186,7 @@ public class VideoTranscodeService extends IntentService {
                 .setOngoing(true)
                 .setSmallIcon(R.drawable.ic_video)
                 .setContentText(title)
-                .setContentTitle("Coatex Tor")
+                .setContentTitle("Kriptex Tor")
                 .setOnlyAlertOnce(true)
                 .setProgress(100, progress, progress <= 0)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -199,7 +199,7 @@ public class VideoTranscodeService extends IntentService {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private String createNotificationChannel(NotificationManager notificationManager) {
-        String channelId = "coatex_transcode_video_01";
+    String channelId = "kriptex_transcode_video_01";
         String channelName = "Transcode Video";
         NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT);
         // omitted the LED color

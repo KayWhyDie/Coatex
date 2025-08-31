@@ -34,9 +34,9 @@ public class AboutActivity extends AppCompatActivity {
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         }
 
-        LibsSupportFragment libsSupportFragment = new LibsBuilder()
-                .withActivityTitle("Open-source Libraries")
-                .supportFragment();
+    // Create the AboutLibraries support fragment with default configuration.
+    LibsSupportFragment libsSupportFragment = new LibsBuilder()
+        .supportFragment();
 
         getSupportFragmentManager().beginTransaction().add(R.id.content, libsSupportFragment, "libs").commit();
     }

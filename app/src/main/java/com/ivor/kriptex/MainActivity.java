@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
 
                 String[] tokens = str.split(" ", 3);
 
-                if (tokens.length < 2 || !tokens[0].equals("Coatex")) {
+                if (tokens.length < 2 || !tokens[0].equals("Kriptex")) {
                     snack(getString(R.string.invalid_qr_code));
                     return;
                 }
@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
 
     void showQR() {
         String name = Database.getInstance(this).getName();
-        String txt = "Coatex " + mTor.getID() + " " + name;
+    String txt = "Kriptex " + mTor.getID() + " " + name;
         QRCode qr;
         try {
             qr = Encoder.encode(txt, ErrorCorrectionLevel.M);
