@@ -177,7 +177,19 @@ public class KriptexHostService extends Service {
                 .setContentIntent(intent)
                 .build();
 
-        startForeground(ID_SERVICE, notification);
+        // On Android versions that require a foreground service type, call the
+        // framework overload and supply appropriate types. Use super.startForeground
+        // to call the Service implementation (avoid recursive call to this method).
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            int fgsType = 0;
+            // ServiceInfo constants provide types; reference them through the class
+            // name to avoid additional imports.
+            fgsType |= android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE;
+            fgsType |= android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC;
+            super.startForeground(ID_SERVICE, notification, fgsType);
+        } else {
+            super.startForeground(ID_SERVICE, notification);
+        }
     }
 
 

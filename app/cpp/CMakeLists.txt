@@ -5,6 +5,9 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
+# Define the project to avoid CMake developer warnings.
+project(KriptexApp)
+
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
 # You can define multiple libraries, and CMake builds them for you.
@@ -44,3 +47,12 @@ target_link_libraries( # Specifies the target library.
         # Links the target library to the log library
         # included in the NDK.
         ${log-lib})
+
+# Ensure shared libraries are linked with a 16KB page size to be compatible
+# with Android 14+ page-size alignment checks. This app packages small native
+# libs and may run on devices/emulators where the kernel uses 16KB pages.
+# Add the linker option so the produced ELF uses a compatible max page size.
+if(NOT DEFINED CMAKE_SHARED_LINKER_FLAGS)
+        set(CMAKE_SHARED_LINKER_FLAGS "")
+endif()
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-z,max-page-size=16384")

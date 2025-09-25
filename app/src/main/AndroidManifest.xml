@@ -19,8 +19,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:extractNativeLibs="true">
+        android:extractNativeLibs="true"
+        android:theme="@style/AppTheme">
         <activity
             android:name=".RequestActivity"
             android:label="@string/title_activity_request"
@@ -81,7 +81,8 @@
         <service
             android:name=".service.KriptexHostService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            android:foregroundServiceType="connectedDevice|dataSync" />
 
         <activity
             android:name=".MainActivity"

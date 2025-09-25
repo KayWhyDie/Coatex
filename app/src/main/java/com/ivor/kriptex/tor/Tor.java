@@ -179,11 +179,41 @@ public class Tor {
                     boolean packagedAltExec = packagedAltExists && packagedHelperAlt.canExecute();
                     log("nativeLibDir=" + nativeLibDir + " packagedExists=" + packagedExists + " packagedExec=" + packagedExec + " packagedAltExists=" + packagedAltExists + " packagedAltExec=" + packagedAltExec);
                     if (packagedExec) {
-                        execPath = packagedHelper.getAbsolutePath();
-                        log("using packaged helper: " + execPath);
+                        // Copy packaged helper into app files dir and execute the copy to avoid
+                        // launching directly from the app lib path (can cause non-exec mappings).
+                        File dst = new File(mContext.getFilesDir(), torname + "_packaged");
+                        if (!dst.exists() || dst.length() != packagedHelper.length()) {
+                            try {
+                                copyFile(packagedHelper, dst);
+                            } catch (IOException e) {
+                                log("copy packaged helper failed: " + e.getMessage());
+                            }
+                        }
+                        try { dst.setExecutable(true); } catch (Exception ignored) {}
+                        if (dst.exists() && dst.canExecute()) {
+                            execPath = dst.getAbsolutePath();
+                            log("using packaged helper (copied): " + execPath);
+                        } else {
+                            execPath = packagedHelper.getAbsolutePath();
+                            log("using packaged helper (direct fallback): " + execPath);
+                        }
                     } else if (packagedAltExec) {
-                        execPath = packagedHelperAlt.getAbsolutePath();
-                        log("using packaged helper (alt): " + execPath);
+                        File dst = new File(mContext.getFilesDir(), "lib" + torname + "_packaged.so");
+                        if (!dst.exists() || dst.length() != packagedHelperAlt.length()) {
+                            try {
+                                copyFile(packagedHelperAlt, dst);
+                            } catch (IOException e) {
+                                log("copy packaged helper alt failed: " + e.getMessage());
+                            }
+                        }
+                        try { dst.setExecutable(true); } catch (Exception ignored) {}
+                        if (dst.exists() && dst.canExecute()) {
+                            execPath = dst.getAbsolutePath();
+                            log("using packaged helper (alt, copied): " + execPath);
+                        } else {
+                            execPath = packagedHelperAlt.getAbsolutePath();
+                            log("using packaged helper (alt, direct fallback): " + execPath);
+                        }
                     } else {
                         // fallback to the extracted file in app files dir
                         File extracted = mContext.getFileStreamPath(torname);
@@ -370,6 +400,18 @@ public class Tor {
         } catch (Exception ex) {
             ex.printStackTrace();
             //throw new Error(ex);
+        }
+    }
+
+    private void copyFile(File src, File dst) throws IOException {
+        try (InputStream in = new java.io.FileInputStream(src);
+             OutputStream out = new java.io.FileOutputStream(dst)) {
+            byte[] buf = new byte[8192];
+            int r;
+            while ((r = in.read(buf)) != -1) {
+                out.write(buf, 0, r);
+            }
+            out.flush();
         }
     }
 
